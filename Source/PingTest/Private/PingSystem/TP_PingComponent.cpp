@@ -7,7 +7,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PingTest/PingTestCharacter.h"
-#include "InputMappingContext.h"
+#include "InputAction.h"
+#include "InputMappingContext.h" 
+#include "InputActionValue.h"
 
 
 // Sets default values for this component's properties
@@ -18,7 +20,7 @@ UTP_PingComponent::UTP_PingComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 	// ...
 	PingAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/FirstPerson/Input/Actions/IA_Ping.IA_Ping"));
-	InputContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/FirstPerson/Input/IMC_Ping.IMC_Ping"));
+	InputContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/FirstPerson/Input/IMC_Pings.IMC_Pings"));
 	
 }
 
