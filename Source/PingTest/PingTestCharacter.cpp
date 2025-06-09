@@ -63,6 +63,8 @@ void APingTestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APingTestCharacter::Look);
+		
+		// Original component setup (keep this too)
 		if (PingComponent)
 		{
 			PingComponent->SetupInputComponent(PlayerInputComponent);

@@ -23,6 +23,8 @@ public:
 
 	UFUNCTION()
 	void InitComponent();
+
+	virtual void BeginPlay() override;
 	/** Called to ping a location */
 
 	UFUNCTION()

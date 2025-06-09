@@ -37,6 +37,13 @@ void UTP_PingComponent::InitComponent()
 			}
 		}
 	}
+	
+}
+
+void UTP_PingComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	InitComponent();  // ก็ This adds the mapping context
 }
 
 void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputComponent)
