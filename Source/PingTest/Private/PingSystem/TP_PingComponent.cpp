@@ -43,7 +43,7 @@ void UTP_PingComponent::InitComponent()
 void UTP_PingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	InitComponent();  // ¡ç This adds the mapping context
+	InitComponent();  // ï¿½ï¿½ This adds the mapping context
 }
 
 void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputComponent)
@@ -53,29 +53,32 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 	{
 		if (PingAction)
 		{
-			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Triggered, this, &UTP_PingComponent::PingWithValue);
+			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Triggered, this, &UTP_PingComponent::Ping);
 		}
 	} 
 }
 
 void UTP_PingComponent::PingWithValue(const FInputActionValue& Value)
 {
-	Ping(); 
+	Ping();
 }
 
 
 void UTP_PingComponent::Ping()
 {
-	LineTraceForPing(); 
+	LineTraceForPing();
 	
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Ping")); 
+	}
 }
 
 void UTP_PingComponent::LineTraceForPing()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
-	if (!PlayerController)
+	if (PlayerController)
 	{
-
 		// use the Capsule ping the actor. 
 		FVector CameraLocation;
 		FRotator CameraRotation;
@@ -88,15 +91,20 @@ void UTP_PingComponent::LineTraceForPing()
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(GetOwner()); // Ignore the player
 
+		TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes;
+		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn)); 
+		
 		UWorld* World = GetWorld();
-		bool bHit = World->LineTraceSingleByChannel(
+		
+		bool bHit  = World->SweepSingleByObjectType(
 			HitResult,
 			CameraLocation,
 			TraceEnd,
-			ECollisionChannel::ECC_Visibility,
+			FQuat::Identity,
+			ObjectTypes,
+			FCollisionShape::MakeSphere(20.f),
 			QueryParams
-		);
-
+			);
 		
 		if (bHit)
 		{
@@ -114,6 +122,7 @@ void UTP_PingComponent::LineTraceForPing()
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, PingMessage);
 			}
 		}
+		
 		else
 		{
 			// No hit - ping at max range
@@ -127,10 +136,12 @@ void UTP_PingComponent::LineTraceForPing()
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("Pinged: Empty Space"));
 			}
 		}
+#if ENABLE_DRAW_DEBUG
+	FVector CapsuleOrigin = CameraLocation + (TraceEnd - CameraLocation) * 0.5f; 
+	FColor CapsuleColor = bHit ? FColor::Green : FColor::Red;
 
-		// Optional: Draw debug line
-		DrawDebugLine(World, CameraLocation, PingLocation, FColor::Yellow, false, 1.0f, 0, 2.0f);
-		
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, 50.f, 20.f,FQuat::Identity, CapsuleColor, false, 3.0f); 
+#endif 
 	}
 }
 
