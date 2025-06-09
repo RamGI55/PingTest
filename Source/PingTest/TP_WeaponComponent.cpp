@@ -12,6 +12,7 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "Public/PingSystem/TP_PingComponent.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -82,6 +83,7 @@ bool UTP_WeaponComponent::AttachWeapon(APingTestCharacter* TargetCharacter)
 
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
+
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))

@@ -8,12 +8,26 @@
     <projectFile>Intermediate/ProjectFiles/PingTest.vcxproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="c0ce8ad9-57a4-4782-b326-dbf20845c92e" name="Changes" comment="" />
+    <list default="true" id="c0ce8ad9-57a4-4782-b326-dbf20845c92e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.PingTest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PingTest/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Input/IMC_Weapons.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Input/IMC_Weapons.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PingTest/PingTestCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/PingTestCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PingTest/PingTestCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/PingTestCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PingTest/Private/PingSystem/TP_PingComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/Private/PingSystem/TP_PingComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PingTest/Public/PingSystem/TP_PingComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/Public/PingSystem/TP_PingComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PingTest/TP_WeaponComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/TP_WeaponComponent.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "customColor": "",
@@ -28,6 +42,7 @@
   "keyToString": {
     "C/C++ Project.PingTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -140,7 +155,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749450152196</updated>
-      <workItem from="1749450153746" duration="359000" />
+      <workItem from="1749450153746" duration="4440000" />
     </task>
     <servers />
   </component>

@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Public/PingSystem/TP_PingComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -36,6 +37,8 @@ APingTestCharacter::APingTestCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	PingComponent = CreateDefaultSubobject<UTP_PingComponent>(TEXT("PingComponent"));
+
 }
 
 void APingTestCharacter::BeginPlay()
@@ -60,6 +63,10 @@ void APingTestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APingTestCharacter::Look);
+		if (PingComponent)
+		{
+			PingComponent->SetupInputComponent(PlayerInputComponent);
+		}
 	}
 	else
 	{

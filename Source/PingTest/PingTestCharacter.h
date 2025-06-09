@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "PingTestCharacter.generated.h"
 
+class UTP_PingComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -36,6 +37,9 @@ class APingTestCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	UPROPERTY(VisibleAnywhere, Category = "Ping")
+	UTP_PingComponent* PingComponent; 
 	
 public:
 	APingTestCharacter();

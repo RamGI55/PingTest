@@ -7,6 +7,11 @@
 #include "TP_PingComponent.generated.h"
 
 
+class UInputAction;
+class UInputComponent;
+class UInputMappingContext; 
+class APingTestCharacter;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGTEST_API UTP_PingComponent : public UActorComponent
 {
@@ -16,6 +21,17 @@ public:
 	// Sets default values for this component's properties
 	UTP_PingComponent();
 
+	UFUNCTION()
+	void InitComponent();
+	/** Called to ping a location */
+
+	UFUNCTION()
+	void SetupInputComponent(class UInputComponent* PlayerInputComponent); 
+	UFUNCTION (BlueprintCallable, Category = "Ping")
+	void Ping();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	TObjectPtr<UInputAction> PingAction; 
+	
 private:
 	/** The ping location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ping", meta = (AllowPrivateAccess = "true"))
@@ -25,10 +41,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ping", meta = (AllowPrivateAccess = "true"))
 	float PingRadius;
 
-	/*UPROPERTY(VisibleAnywhere, Category ="Input")
-	TObjectPtr<class UInputMappingContext> InputContext;
+	UPROPERTY(VisibleAnywhere, Category ="Input")
+	TObjectPtr<UInputMappingContext> InputContext;
+	
+	TObjectPtr<APingTestCharacter> PlayerCharacter;
 
-	UPROPERTY(VisibleAnywhere, Category = "Input") */
-	
-	
+	// Enemy Character to ping 
 };
