@@ -137,10 +137,12 @@ void UTP_PingComponent::LineTraceForPing()
 			}
 		}
 #if ENABLE_DRAW_DEBUG
-	FVector CapsuleOrigin = CameraLocation + (TraceEnd - CameraLocation) * 0.5f; 
+	FVector CapsuleOrigin = CameraLocation + (TraceEnd - CameraLocation) * 0.5f;
+		FVector EndLocation = bHit ? HitResult.Location : TraceEnd; 
 	FColor CapsuleColor = bHit ? FColor::Green : FColor::Red;
 
-	DrawDebugCapsule(GetWorld(), CapsuleOrigin, 50.f, 20.f,FQuat::Identity, CapsuleColor, false, 3.0f); 
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, 50.f, 20.f,FQuat::Identity, CapsuleColor, false, 3.0f);
+		DrawDebugLine(World, CameraLocation, EndLocation, FColor::White, false, 3.0f, 0, 1.0f);
 #endif 
 	}
 }
