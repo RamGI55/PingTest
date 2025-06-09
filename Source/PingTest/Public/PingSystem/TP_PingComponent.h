@@ -28,13 +28,21 @@ public:
 	/** Called to ping a location */
 
 	UFUNCTION()
-	void SetupInputComponent(class UInputComponent* PlayerInputComponent); 
+	void SetupInputComponent(class UInputComponent* PlayerInputComponent);
+
+	UFUNCTION(BlueprintCallable, Category="Ping")
+	void PingWithValue(const FInputActionValue& Value); 
+	
 	UFUNCTION (BlueprintCallable, Category = "Ping")
 	void Ping();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> PingAction; 
-	
+
+
 private:
+	UFUNCTION(BlueprintCallable, Category = "LineTrace")
+	void LineTraceForPing(); 
+	
 	/** The ping location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ping", meta = (AllowPrivateAccess = "true"))
 	FVector PingLocation;
