@@ -14,8 +14,6 @@ AEnemyCharacter::AEnemyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
-	
 	
 
 }
@@ -54,6 +52,21 @@ void AEnemyCharacter::GetNotification(AEnemyCharacter* PingedEnemy)
 
 void AEnemyCharacter::EnableOutline()
 {
+
+	if (GetMesh())
+	{
+		GetMesh()->SetRenderCustomDepth(true);
+		GetMesh()->SetCustomDepthStencilValue(2); // Set a custom depth stencil value for the outline
+	}
 	
+}
+
+void AEnemyCharacter::DisableOutline()
+{
+	if (GetMesh())
+	{
+		GetMesh()->SetRenderCustomDepth(false);
+		GetMesh()->SetCustomDepthStencilValue(0); // Reset the custom depth stencil value
+	}
 }
 

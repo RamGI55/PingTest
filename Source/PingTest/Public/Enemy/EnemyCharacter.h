@@ -20,9 +20,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	void GetNotification(AEnemyCharacter* PingedEnemy);
 
-	void EnableOutline(); 
+	UFUNCTION(BlueprintCallable, Category = "Outline")
+	void EnableOutline();
+
+	UFUNCTION(BlueprintCallable, Category = "Outline")
+	void DisableOutline(); 
 
 public: 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy") 
