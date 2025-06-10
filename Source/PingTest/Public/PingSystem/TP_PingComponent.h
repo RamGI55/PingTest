@@ -7,6 +7,7 @@
 #include "TP_PingComponent.generated.h"
 
 
+struct FInputActionValue;
 class AEnemyCharacter;
 class UInputAction;
 class UInputComponent;
@@ -33,11 +34,22 @@ public:
 	UFUNCTION()
 	void SetupInputComponent(class UInputComponent* PlayerInputComponent);
 
+	/** Dynamic ping input handlers */
+	UFUNCTION(BlueprintCallable, Category = "Ping")
+	void StartDynamicPing();
+
+	UFUNCTION(BlueprintCallable, Category = "Ping")
+	void StopDynamicPing(); 
+
+	UFUNCTION(BlueprintCallable, Category = "Ping")
+	void UpdateDynamicPing(); 
+	
 	UFUNCTION(BlueprintCallable, Category="Ping")
-	void PingWithValue(const FInputActionValue& Value); 
+	void PingWithValue(const FInputActionValue& Value); // This function will be deprcated in the future, use DyanmicPing instead. 
 	
 	UFUNCTION (BlueprintCallable, Category = "Ping")
 	void Ping();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> PingAction;
 

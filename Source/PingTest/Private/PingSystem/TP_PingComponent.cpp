@@ -60,6 +60,19 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 	} 
 }
 
+void UTP_PingComponent::StartDynamicPing()
+{
+	
+}
+
+void UTP_PingComponent::StopDynamicPing()
+{
+}
+
+void UTP_PingComponent::UpdateDynamicPing()
+{
+}
+
 void UTP_PingComponent::PingWithValue(const FInputActionValue& Value)
 {
 	Ping(); 
