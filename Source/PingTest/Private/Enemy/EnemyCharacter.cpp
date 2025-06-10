@@ -12,10 +12,8 @@
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-	
 
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
@@ -31,12 +29,12 @@ void AEnemyCharacter::BeginPlay()
 				if (UTP_PingComponent* PingComp = PlayerCharacter->FindComponentByClass<UTP_PingComponent>())
 				{
 					check(PingComp);
-					PingComp->OnEnemyPinged.AddDynamic(this, &AEnemyCharacter::GetNotification); 
+					PingComp->OnEnemyPinged.AddDynamic(this, &AEnemyCharacter::GetNotification);
+					// Bind the delegate to the GetNotification function
 				}
 			}
 		}
 	}
-	
 }
 
 void AEnemyCharacter::GetNotification(AEnemyCharacter* PingedEnemy)

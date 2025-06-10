@@ -14,7 +14,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c0ce8ad9-57a4-4782-b326-dbf20845c92e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.PingTest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PingTest/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/PingTest/Private/Enemy/EnemyCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/Private/Enemy/EnemyCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/PingTest/Public/Enemy/EnemyCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PingTest/Public/Enemy/EnemyCharacter.h" afterDir="false" />
     </list>
@@ -62,7 +61,13 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://11" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://13" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/include/atomic" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/PingTest/Private/Enemy/EnemyCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/PingTest/Public/Enemy/EnemyCharacter.h" root0="FORCE_HIGHLIGHTING" />
@@ -210,7 +215,7 @@
       <updated>1749450152196</updated>
       <workItem from="1749450153746" duration="9162000" />
       <workItem from="1749474068212" duration="4233000" />
-      <workItem from="1749528741098" duration="7553000" />
+      <workItem from="1749528741098" duration="8661000" />
     </task>
     <servers />
   </component>

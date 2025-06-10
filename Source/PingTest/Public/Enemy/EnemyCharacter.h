@@ -22,6 +22,7 @@ protected:
 
 	UFUNCTION()
 	void GetNotification(AEnemyCharacter* PingedEnemy);
+	// This function will be called when the player pings an enemy character 
 
 	UFUNCTION(BlueprintCallable, Category = "Outline")
 	void EnableOutline();
@@ -29,14 +30,11 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Outline")
 	void DisableOutline(); 
 
-public: 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy") 
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAnimMontage> AnimMontage;
-	
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
 	float Health = 100.0f;
-	
-	
 	
 };
