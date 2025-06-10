@@ -7,12 +7,13 @@
 #include "TP_PingComponent.generated.h"
 
 
+class AEnemyCharacter;
 class UInputAction;
 class UInputComponent;
 class UInputMappingContext; 
 class APingTestCharacter;
 
-//DECLARE_MULTICAST_DELEGATE_OneParam(FPingedDelegate, const FHitResult&, bHit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPinged, AEnemyCharacter*, PingedEnemy);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGTEST_API UTP_PingComponent : public UActorComponent
@@ -39,6 +40,9 @@ public:
 	void Ping();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> PingAction;
+
+	UPROPERTY(BlueprintAssignable, Category = "Ping Events")
+	FOnEnemyPinged OnEnemyPinged; 
 	
 	FDelegateHandle PingDelegate; 
 

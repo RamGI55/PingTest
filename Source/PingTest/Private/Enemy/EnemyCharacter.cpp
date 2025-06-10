@@ -5,6 +5,8 @@
 #include "PingTest/Public/Enemy/EnemyCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "PingSystem/TP_PingComponent.h"
+#include "PingTest/PingTestCharacter.h"
 
 
 // Sets default values
@@ -22,10 +24,35 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PC = World->GetFirstPlayerController())
+		{
+			if (APingTestCharacter* PlayerCharacter = Cast<APingTestCharacter>(PC->GetPawn()))
+			{
+				if (UTP_PingComponent* PingComp = PlayerCharacter->FindComponentByClass<UTP_PingComponent>())
+				{
+					check(PingComp);
+					PingComp->OnEnemyPinged.AddDynamic(this, &AEnemyCharacter::GetNotification); 
+				}
+			}
+		}
+	}
 	
 }
 
-void AEnemyCharacter::GetNotification(bool bHit)
+void AEnemyCharacter::GetNotification(AEnemyCharacter* PingedEnemy)
+{
+	if (PingedEnemy == this)
+	{
+		EnableOutline(); 
+		// Optionally, you can also log or handle the ping notification here
+		UE_LOG(LogTemp, Warning, TEXT("Pinged Enemy: %s"), *GetName());
+	}
+	
+}
+
+void AEnemyCharacter::EnableOutline()
 {
 	
 }

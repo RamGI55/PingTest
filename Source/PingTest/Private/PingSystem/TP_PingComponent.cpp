@@ -10,6 +10,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h" 
 #include "InputActionValue.h"
+#include "Enemy/EnemyCharacter.h"
 
 // Need the delegate for the bhit - send to the enemy character to enable outline. 
 
@@ -71,12 +72,14 @@ void UTP_PingComponent::Ping()
 	
 }
 
+
+// Using the linetracing to pint the enemy characters. 
+
 void UTP_PingComponent::LineTraceForPing()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
 	if (PlayerController)
 	{
-
 		// use the Capsule ping the actor. 
 		FVector CameraLocation;
 		FRotator CameraRotation;
@@ -88,24 +91,33 @@ void UTP_PingComponent::LineTraceForPing()
 		FHitResult HitResult;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(GetOwner()); // Ignore the player
+		
+		FCollisionObjectQueryParams ObjectQueryParams;
+		ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+		
 
-		UWorld* World = GetWorld();
-		bool bHit = World->LineTraceSingleByChannel(
+		bool bHit = GetWorld()->LineTraceSingleByObjectType(
 			HitResult,
 			CameraLocation,
 			TraceEnd,
-			ECollisionChannel::ECC_Visibility,
+			ObjectQueryParams,  // This is the key parameter that makes this method different
 			QueryParams
 		);
-
 		
 		if (bHit)
 		{
 			// Hit something
 			PingLocation = HitResult.Location;
-        
-			// Debug draw
-			DrawDebugSphere(World, PingLocation, PingRadius, 12, FColor::Red, false, 3.0f);
+			// Get the actor hit however, didn't get the any enemy character information and won't able to send the delegate to the enemy character.
+			
+			if (AEnemyCharacter* HitEnemy = Cast<AEnemyCharacter>(HitResult.GetActor()))
+			{
+				OnEnemyPinged.Broadcast(HitEnemy);
+
+				// Debug draw
+				DrawDebugSphere(GetWorld(), PingLocation, PingRadius, 12, FColor::Red, false, 3.0f);
+				
+			}
         
 			// Screen message
 			if (GEngine)
@@ -113,12 +125,8 @@ void UTP_PingComponent::LineTraceForPing()
 				FString HitActorName = HitResult.GetActor() ? HitResult.GetActor()->GetName() : TEXT("Unknown");
 				FString PingMessage = FString::Printf(TEXT("Pinged: %s"), *HitActorName);
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, PingMessage);
-
-				//FPingedDelegate PingedDelegate;
-				//PingedDelegate.Broadcast(bHit); 
+				
 			}
-
-			
 		}
 		else
 		{
@@ -126,7 +134,7 @@ void UTP_PingComponent::LineTraceForPing()
 			PingLocation = TraceEnd;
         
 			// Debug draw
-			DrawDebugSphere(World, PingLocation, PingRadius, 12, FColor::Blue, false, 3.0f);
+			DrawDebugSphere(GetWorld(), PingLocation, PingRadius, 12, FColor::Blue, false, 3.0f);
         
 			if (GEngine)
 			{
@@ -135,8 +143,7 @@ void UTP_PingComponent::LineTraceForPing()
 		}
 
 		// Optional: Draw debug line
-		DrawDebugLine(World, CameraLocation, PingLocation, FColor::Yellow, false, 1.0f, 0, 2.0f);
-		
+		DrawDebugLine(GetWorld(), CameraLocation, PingLocation, FColor::Yellow, false, 1.0f, 0, 2.0f);
 	}
 }
 
