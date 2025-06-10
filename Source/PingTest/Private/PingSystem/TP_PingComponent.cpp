@@ -11,6 +11,7 @@
 #include "InputMappingContext.h" 
 #include "InputActionValue.h"
 
+// Need the delegate for the bhit - send to the enemy character to enable outline. 
 
 // Sets default values for this component's properties
 UTP_PingComponent::UTP_PingComponent()
@@ -53,7 +54,7 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 	{
 		if (PingAction)
 		{
-			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Triggered, this, &UTP_PingComponent::PingWithValue);
+			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Triggered, this, &UTP_PingComponent::Ping);
 		}
 	} 
 }
@@ -73,7 +74,7 @@ void UTP_PingComponent::Ping()
 void UTP_PingComponent::LineTraceForPing()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
-	if (!PlayerController)
+	if (PlayerController)
 	{
 
 		// use the Capsule ping the actor. 
@@ -112,7 +113,12 @@ void UTP_PingComponent::LineTraceForPing()
 				FString HitActorName = HitResult.GetActor() ? HitResult.GetActor()->GetName() : TEXT("Unknown");
 				FString PingMessage = FString::Printf(TEXT("Pinged: %s"), *HitActorName);
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, PingMessage);
+
+				//FPingedDelegate PingedDelegate;
+				//PingedDelegate.Broadcast(bHit); 
 			}
+
+			
 		}
 		else
 		{

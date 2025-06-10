@@ -25,3 +25,8 @@ void AEnemyCharacter::BeginPlay()
 	
 }
 
+void AEnemyCharacter::GetNotification(bool bHit)
+{
+	
+}
+

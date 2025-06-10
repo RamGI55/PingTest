@@ -20,6 +20,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void GetNotification(bool bHit); 
+
 public: 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy") 
 	TObjectPtr<UAnimMontage> AnimMontage;
@@ -28,6 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float Health = 100.0f;
 	
-
+	
 	
 };

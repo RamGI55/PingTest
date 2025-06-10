@@ -12,6 +12,8 @@ class UInputComponent;
 class UInputMappingContext; 
 class APingTestCharacter;
 
+//DECLARE_MULTICAST_DELEGATE_OneParam(FPingedDelegate, const FHitResult&, bHit);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGTEST_API UTP_PingComponent : public UActorComponent
 {
@@ -36,7 +38,9 @@ public:
 	UFUNCTION (BlueprintCallable, Category = "Ping")
 	void Ping();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	TObjectPtr<UInputAction> PingAction; 
+	TObjectPtr<UInputAction> PingAction;
+	
+	FDelegateHandle PingDelegate; 
 
 
 private:
