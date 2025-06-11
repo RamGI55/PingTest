@@ -73,10 +73,10 @@ void UTP_PingComponent::StopDynamicPing()
 {
 	if (HitEnemy == nullptr) { return; }
 	// Lost -> Send Delegation to Stop
-	OnEnemyPinged.Clear();
+	
 	OnEnemyLost.Broadcast(HitEnemy);
 	HitEnemy = nullptr; // Reset the HitEnemy to nullptr 
-	OnEnemyLost.Clear();
+	
 }
 
 void UTP_PingComponent::UpdateDynamicPing()
