@@ -55,7 +55,9 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 	{
 		if (PingAction)
 		{
-			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Triggered, this, &UTP_PingComponent::Ping);
+			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Started, this, &UTP_PingComponent::Ping);
+			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Completed, this, &UTP_PingComponent::StopDynamicPing); 
+			
 		}
 	} 
 }
@@ -64,19 +66,27 @@ void UTP_PingComponent::StartDynamicPing()
 {
 	// Hit -> Send Delegation to ping
 	
+	
 }
 
 void UTP_PingComponent::StopDynamicPing()
 {
+	if (HitEnemy == nullptr) { return; }
 	// Lost -> Send Delegation to Stop
+	OnEnemyPinged.Clear();
+	OnEnemyLost.Broadcast(HitEnemy);
+	HitEnemy = nullptr; // Reset the HitEnemy to nullptr 
+	OnEnemyLost.Clear();
 }
 
 void UTP_PingComponent::UpdateDynamicPing()
 {
+	
 }
 
 void UTP_PingComponent::PingWithValue(const FInputActionValue& Value)
 {
+	
 	Ping(); 
 }
 
@@ -105,7 +115,7 @@ void UTP_PingComponent::LineTraceForPing()
 		FVector TraceStart = CameraLocation;
 		FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * PingRange);
 
-		FHitResult HitResult;
+		//FHitResult HitResult;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(GetOwner()); // Ignore the player
 		
@@ -126,8 +136,8 @@ void UTP_PingComponent::LineTraceForPing()
 			// Hit something
 			PingLocation = HitResult.Location;
 			// Get the actor hit however, didn't get the any enemy character information and won't able to send the delegate to the enemy character.
-			
-			if (AEnemyCharacter* HitEnemy = Cast<AEnemyCharacter>(HitResult.GetActor()))
+			HitEnemy = Cast<AEnemyCharacter>(HitResult.GetActor()); 
+			if (HitEnemy)
 			{
 				OnEnemyPinged.Broadcast(HitEnemy);
 

@@ -81,5 +81,11 @@ private:
 	
 	TObjectPtr<APingTestCharacter> PlayerCharacter;
 
+	UPROPERTY()
+	FHitResult HitResult ;
+
+	UPROPERTY()
+	AEnemyCharacter* HitEnemy = nullptr;  // The enemy character that was pinged 
+
 	// Enemy Character to ping 
 };

@@ -28,7 +28,7 @@ protected:
 	void EnableOutline();
 
 	UFUNCTION(BlueprintCallable, Category = "Outline")
-	void DisableOutline(); 
+	void DisableOutline(AEnemyCharacter* LostEnemy); 
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))

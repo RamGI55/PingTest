@@ -30,6 +30,7 @@ void AEnemyCharacter::BeginPlay()
 				{
 					check(PingComp);
 					PingComp->OnEnemyPinged.AddDynamic(this, &AEnemyCharacter::GetNotification);
+					PingComp->OnEnemyLost.AddDynamic(this, &AEnemyCharacter::DisableOutline);
 					// Bind the delegate to the GetNotification function
 				}
 			}
@@ -59,7 +60,7 @@ void AEnemyCharacter::EnableOutline()
 	
 }
 
-void AEnemyCharacter::DisableOutline()
+void AEnemyCharacter::DisableOutline(AEnemyCharacter* LostEnemy)
 {
 	if (GetMesh())
 	{
