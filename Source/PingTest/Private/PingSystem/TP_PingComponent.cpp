@@ -62,11 +62,13 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 
 void UTP_PingComponent::StartDynamicPing()
 {
+	// Hit -> Send Delegation to ping
 	
 }
 
 void UTP_PingComponent::StopDynamicPing()
 {
+	// Lost -> Send Delegation to Stop
 }
 
 void UTP_PingComponent::UpdateDynamicPing()
@@ -91,14 +93,16 @@ void UTP_PingComponent::Ping()
 void UTP_PingComponent::LineTraceForPing()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
+	check(PlayerController);
 	if (PlayerController)
 	{
 		// use the Capsule ping the actor. 
 		FVector CameraLocation;
 		FRotator CameraRotation;
-		float PingRange = 10000.0f; 
+		float PingRange = 5000.0f; 
 		PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
+		FVector TraceStart = CameraLocation;
 		FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * PingRange);
 
 		FHitResult HitResult;
@@ -111,7 +115,7 @@ void UTP_PingComponent::LineTraceForPing()
 
 		bool bHit = GetWorld()->LineTraceSingleByObjectType(
 			HitResult,
-			CameraLocation,
+			TraceStart,
 			TraceEnd,
 			ObjectQueryParams,  // This is the key parameter that makes this method different
 			QueryParams

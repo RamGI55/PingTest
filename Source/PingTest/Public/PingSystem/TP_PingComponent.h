@@ -15,6 +15,7 @@ class UInputMappingContext;
 class APingTestCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPinged, AEnemyCharacter*, PingedEnemy);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPingLost, AEnemyCharacter*, LostEnemy); 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGTEST_API UTP_PingComponent : public UActorComponent
@@ -48,13 +49,17 @@ public:
 	void PingWithValue(const FInputActionValue& Value); // This function will be deprcated in the future, use DyanmicPing instead. 
 	
 	UFUNCTION (BlueprintCallable, Category = "Ping")
-	void Ping();
+	void Ping();  // This function will be deprcated in the future, use DyanmicPing instead. 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> PingAction;
 
+	// Ping Delegations.
 	UPROPERTY(BlueprintAssignable, Category = "Ping Events")
-	FOnEnemyPinged OnEnemyPinged; 
+	FOnEnemyPinged OnEnemyPinged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Ping Events")
+	FOnEnemyPingLost OnEnemyLost; 
 	
 	FDelegateHandle PingDelegate; 
 
