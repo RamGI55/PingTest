@@ -56,6 +56,7 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 		if (PingAction)
 		{
 			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Started, this, &UTP_PingComponent::Ping);
+			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Canceled, this, &UTP_PingComponent::StopDynamicPing); 
 			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Completed, this, &UTP_PingComponent::StopDynamicPing); 
 			
 		}
@@ -71,9 +72,10 @@ void UTP_PingComponent::StartDynamicPing()
 
 void UTP_PingComponent::StopDynamicPing()
 {
+	if (!GetWorld()) { return; };
+	GetWorld()->GetTimerManager().ClearTimer(PingTimerHandle); 
 	if (HitEnemy == nullptr) { return; }
 	// Lost -> Send Delegation to Stop
-	
 	OnEnemyLost.Broadcast(HitEnemy);
 	HitEnemy = nullptr; // Reset the HitEnemy to nullptr 
 	
@@ -93,7 +95,7 @@ void UTP_PingComponent::PingWithValue(const FInputActionValue& Value)
 
 void UTP_PingComponent::Ping()
 {
-	LineTraceForPing(); 
+	GetWorld()->GetTimerManager().SetTimer(PingTimerHandle, this, &UTP_PingComponent::LineTraceForPing, .5f, true, 0.1f); 
 	
 }
 
@@ -122,12 +124,19 @@ void UTP_PingComponent::LineTraceForPing()
 		FCollisionObjectQueryParams ObjectQueryParams;
 		ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
 		
-
-		bool bHit = GetWorld()->LineTraceSingleByObjectType(
+		/*bool bHit = GetWorld()->LineTraceSingleByObjectType(
 			HitResult,
 			TraceStart,
 			TraceEnd,
 			ObjectQueryParams,  // This is the key parameter that makes this method different
+			QueryParams
+		);*/
+
+		bool bHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			TraceStart,
+			TraceEnd,
+			ECC_WorldDynamic,  // Use Visibility channel for the line trace
 			QueryParams
 		);
 		
@@ -140,7 +149,6 @@ void UTP_PingComponent::LineTraceForPing()
 			if (HitEnemy)
 			{
 				OnEnemyPinged.Broadcast(HitEnemy);
-
 				// Debug draw
 				DrawDebugSphere(GetWorld(), PingLocation, PingRadius, 12, FColor::Red, false, 3.0f);
 				
@@ -154,6 +162,7 @@ void UTP_PingComponent::LineTraceForPing()
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, PingMessage);
 				
 			}
+			
 		}
 		else
 		{
@@ -166,6 +175,11 @@ void UTP_PingComponent::LineTraceForPing()
 			if (GEngine)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("Pinged: Empty Space"));
+			}
+			if (HitEnemy)
+			{
+				OnEnemyLost.Broadcast(HitEnemy);
+				HitEnemy = nullptr; // Reset the HitEnemy to nullptr
 			}
 		}
 

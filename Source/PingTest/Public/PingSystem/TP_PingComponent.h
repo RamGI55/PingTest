@@ -15,7 +15,7 @@ class UInputMappingContext;
 class APingTestCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPinged, AEnemyCharacter*, PingedEnemy);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPingLost, AEnemyCharacter*, LostEnemy); 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPingLost, AEnemyCharacter*, LostEnemy);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGTEST_API UTP_PingComponent : public UActorComponent
@@ -87,5 +87,11 @@ private:
 	UPROPERTY()
 	AEnemyCharacter* HitEnemy = nullptr;  // The enemy character that was pinged 
 
-	// Enemy Character to ping 
+	UPROPERTY()
+	FTimerHandle PingTimerHandle;// Timer handle for ping duration
+
+	UPROPERTY()
+	TArray<AEnemyCharacter*> PingedEnemies; // List of pinged enemies 
+	// Enemy Character to ping
+	
 };
