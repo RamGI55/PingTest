@@ -177,9 +177,9 @@ void UTP_PingComponent::Ping()
 	GetWorld()->GetTimerManager().SetTimer(PingTimerHandle,
 		this,
 		&UTP_PingComponent::LineTraceForPing,
-		.1f,
+		.01f,
 		true,
-		0.1f); 
+		0.01f); 
 }
 
 // Using the linetracing to pint the enemy characters. 
