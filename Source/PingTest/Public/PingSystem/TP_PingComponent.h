@@ -34,7 +34,8 @@ public:
 
 	UFUNCTION()
 	void SetupInputComponent(class UInputComponent* PlayerInputComponent);
-
+	
+	
 	/** Dynamic ping input handlers */
 	UFUNCTION(BlueprintCallable, Category = "Ping")
 	void StartDynamicPing();
@@ -43,13 +44,21 @@ public:
 	void StopDynamicPing(); 
 
 	UFUNCTION(BlueprintCallable, Category = "Ping")
-	void UpdateDynamicPing(); 
+	void UpdateDynamicPing();
+
+	UFUNCTION(BlueprintCallable, Category = "Screen")
+	bool GetEnemiesInCrosshair(TArray<AEnemyCharacter*>& OutEnemies) const;
+
+	UFUNCTION(Category = "Ping")
+	bool isEnemyNearCrosshair(AEnemyCharacter*& OutEnemy, const FVector2D& CrosshairPos, APlayerController* PC) const; 
 	
-	UFUNCTION(BlueprintCallable, Category="Ping")
-	void PingWithValue(const FInputActionValue& Value); // This function will be deprcated in the future, use DyanmicPing instead. 
-	
-	UFUNCTION (BlueprintCallable, Category = "Ping")
+	UFUNCTION(BlueprintCallable, Category = "Ping")
 	void Ping();  // This function will be deprcated in the future, use DyanmicPing instead. 
+
+	//UFUNCTION(Category = "Ping")
+	//bool GetEnemyInCrosshair(AEnemyCharacter*& OutEnemy) const;
+
+
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> PingAction;
@@ -67,6 +76,9 @@ public:
 private:
 	UFUNCTION(BlueprintCallable, Category = "LineTrace")
 	void LineTraceForPing(); 
+
+	UFUNCTION(Category = "Ping")
+	void ProcessPingedEnemy(); 
 	
 	/** The ping location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ping", meta = (AllowPrivateAccess = "true"))
@@ -81,17 +93,33 @@ private:
 	
 	TObjectPtr<APingTestCharacter> PlayerCharacter;
 
-	UPROPERTY()
-	FHitResult HitResult ;
+	/** The hit result from the line trace */ 
+	/*UPROPERTY()
+	FHitResult HitResult;*/
 
+	UPROPERTY()
+	TArray<FHitResult> HitResult; 
+	
 	UPROPERTY()
 	AEnemyCharacter* HitEnemy = nullptr;  // The enemy character that was pinged 
 
+	/** Timer handle for ping duration */
 	UPROPERTY()
 	FTimerHandle PingTimerHandle;// Timer handle for ping duration
 
+	/** Dynamic Container for pinging enemies */
 	UPROPERTY()
-	TArray<AEnemyCharacter*> PingedEnemies; // List of pinged enemies 
+	TArray<AEnemyCharacter*> PingedEnemies; // List of pinged enemies
+
+	UPROPERTY()
+	TArray<TObjectPtr<AEnemyCharacter>> LostEnemies;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ping" , meta = (AllowPrivateAccess = "true")) 
+	float PingRange = 5000.0f; // Default ping range
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ping" , meta = (AllowPrivateAccess = "true")) 
+	float CrosshairTolerancePixels = 50.f;
+	
 	// Enemy Character to ping
 	
 };

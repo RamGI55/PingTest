@@ -4,6 +4,7 @@
 #include "PingSystem/TP_PingComponent.h"
 #include "PingTest/Public/PingSystem/TP_PingComponent.h"
 
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PingTest/PingTestCharacter.h"
@@ -73,32 +74,114 @@ void UTP_PingComponent::StartDynamicPing()
 void UTP_PingComponent::StopDynamicPing()
 {
 	if (!GetWorld()) { return; };
-	GetWorld()->GetTimerManager().ClearTimer(PingTimerHandle); 
-	if (HitEnemy == nullptr) { return; }
-	// Lost -> Send Delegation to Stop
-	OnEnemyLost.Broadcast(HitEnemy);
-	HitEnemy = nullptr; // Reset the HitEnemy to nullptr 
+	GetWorld()->GetTimerManager().ClearTimer(PingTimerHandle);
+	for (AEnemyCharacter* Enemy : PingedEnemies)
+	{
+		if (Enemy)
+		{
+			Enemy->SetSpotted(GetOwner(), false); // Reset the enemy spotted state
+			OnEnemyLost.Broadcast(HitEnemy);
+		}
+	}
+	PingedEnemies.Empty();
+	LostEnemies.Empty();
 	
 }
 
 void UTP_PingComponent::UpdateDynamicPing()
 {
-	
+	PingedEnemies.Empty();
+	AActor* Owner = GetOwner();
+	if (!Owner) { return; }
+
+	GetEnemiesInCrosshair(PingedEnemies);
+	// Dynamic Crosshair ping logic can be added here
+	for (int32 i = 0; i < PingedEnemies.Num(); i++)
+	{
+		if (PingedEnemies[i])
+		{
+			FString EnemyName = FString::Printf(TEXT("SPOTTED: %s"), *PingedEnemies[i]->GetName());
+			GEngine->AddOnScreenDebugMessage(10 + i, 0.1f, FColor::Red, EnemyName);
+		}
+	}
+	ProcessPingedEnemy();
 }
 
-void UTP_PingComponent::PingWithValue(const FInputActionValue& Value)
+bool UTP_PingComponent::GetEnemiesInCrosshair(TArray<AEnemyCharacter*>& OutEnemies) const
 {
-	
-	Ping(); 
+	OutEnemies.Empty();
+
+	APawn* PlayerPawn = Cast<APawn>(GetOwner());
+	if (!PlayerPawn) { return false; }
+
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	if (!PlayerController) { return false; }
+
+	int32 ViewportSizeX, ViewportSizeY;
+	PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
+	FVector2D ViewportCenter(ViewportSizeX / 2.0f, ViewportSizeY / 2.0f);
+
+	for (TActorIterator<AEnemyCharacter> ActorIter(GetWorld()); ActorIter; ++ActorIter)
+	{
+		AEnemyCharacter* Enemy = *ActorIter;
+		if (!Enemy || !Enemy->IsValidLowLevel()) { continue; }
+		
+		if (isEnemyNearCrosshair(Enemy, ViewportCenter, PlayerController)) // check the bHit, is bhit true? - has been hit enemy? -> then send it valid enemy. 
+		{
+			OutEnemies.Add(Enemy);
+			UE_LOG(LogTemp, VeryVerbose, TEXT("Enemy %s is within crosshair tolerance."), *Enemy->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, VeryVerbose, TEXT("Enemy %s is NOT within crosshair tolerance."), *Enemy->GetName());
+		}
+	}
+
+	return OutEnemies.Num() > 0; 
 }
 
+bool UTP_PingComponent::isEnemyNearCrosshair(AEnemyCharacter*& OutEnemy, const FVector2D& CrosshairPos,
+	APlayerController* PC) const
+{
+	if (!OutEnemy || !PC) { return false; }
+	FVector EnemyWorldLocation = OutEnemy->GetActorLocation();
+
+	APawn* PlayerPawn = PC->GetPawn();
+	if (PlayerPawn)
+	{
+		float DistanceToPlayer = FVector::Dist(PlayerPawn->GetActorLocation(), EnemyWorldLocation);
+		if (DistanceToPlayer > PingRange)
+		{
+			return false;
+		}
+	}
+	
+	FVector2D EnemyScreenPos; 
+	bool bIsOnScreen = PC->ProjectWorldLocationToScreen(EnemyWorldLocation, EnemyScreenPos, true); 
+	
+	if (!bIsOnScreen) { return false; }
+
+	float ScreenDistance = FVector2D::Distance(EnemyScreenPos, CrosshairPos);
+	UE_LOG(LogTemp, VeryVerbose, TEXT("OPTION 2: Enemy %s at screen pos: (%.1f, %.1f), Distance from crosshair: %.1f px"), 
+		   *OutEnemy->GetName(), EnemyScreenPos.X, EnemyScreenPos.Y, ScreenDistance);
+	if (ScreenDistance > CrosshairTolerancePixels)
+	{
+		return false; 
+	}
+
+	return true; 
+}
 
 void UTP_PingComponent::Ping()
 {
-	GetWorld()->GetTimerManager().SetTimer(PingTimerHandle, this, &UTP_PingComponent::LineTraceForPing, .5f, true, 0.1f); 
-	
+	if (!GetWorld()) { return; }; 
+	GetWorld()->GetTimerManager().SetTimer(PingTimerHandle,
+		this,
+		&UTP_PingComponent::UpdateDynamicPing,
+		.5f,
+		true,
+		0.1f); 
 }
-
 
 // Using the linetracing to pint the enemy characters. 
 
@@ -111,7 +194,7 @@ void UTP_PingComponent::LineTraceForPing()
 		// use the Capsule ping the actor. 
 		FVector CameraLocation;
 		FRotator CameraRotation;
-		float PingRange = 5000.0f; 
+		//float PingRange = 5000.0f; 
 		PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
 		FVector TraceStart = CameraLocation;
@@ -120,19 +203,8 @@ void UTP_PingComponent::LineTraceForPing()
 		//FHitResult HitResult;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(GetOwner()); // Ignore the player
-		
-		FCollisionObjectQueryParams ObjectQueryParams;
-		ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
-		
-		/*bool bHit = GetWorld()->LineTraceSingleByObjectType(
-			HitResult,
-			TraceStart,
-			TraceEnd,
-			ObjectQueryParams,  // This is the key parameter that makes this method different
-			QueryParams
-		);*/
 
-		bool bHit = GetWorld()->LineTraceSingleByChannel(
+		bool bHit = GetWorld()->LineTraceMultiByChannel(
 			HitResult,
 			TraceStart,
 			TraceEnd,
@@ -142,50 +214,44 @@ void UTP_PingComponent::LineTraceForPing()
 		
 		if (bHit)
 		{
-			// Hit something
-			PingLocation = HitResult.Location;
-			// Get the actor hit however, didn't get the any enemy character information and won't able to send the delegate to the enemy character.
-			HitEnemy = Cast<AEnemyCharacter>(HitResult.GetActor()); 
-			if (HitEnemy)
+			for (const FHitResult& Hit : HitResult)
 			{
-				OnEnemyPinged.Broadcast(HitEnemy);
-				// Debug draw
-				DrawDebugSphere(GetWorld(), PingLocation, PingRadius, 12, FColor::Red, false, 3.0f);
-				
-			}
-        
-			// Screen message
-			if (GEngine)
-			{
-				FString HitActorName = HitResult.GetActor() ? HitResult.GetActor()->GetName() : TEXT("Unknown");
-				FString PingMessage = FString::Printf(TEXT("Pinged: %s"), *HitActorName);
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, PingMessage);
-				
-			}
-			
-		}
-		else
-		{
-			// No hit - ping at max range
-			PingLocation = TraceEnd;
-        
-			// Debug draw
-			DrawDebugSphere(GetWorld(), PingLocation, PingRadius, 12, FColor::Blue, false, 3.0f);
-        
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("Pinged: Empty Space"));
-			}
-			if (HitEnemy)
-			{
-				OnEnemyLost.Broadcast(HitEnemy);
-				HitEnemy = nullptr; // Reset the HitEnemy to nullptr
+				if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(Hit.GetActor()))
+				{
+					PingedEnemies.AddUnique(Enemy);
+				}
 			}
 		}
-
-		// Optional: Draw debug line
-		DrawDebugLine(GetWorld(), CameraLocation, PingLocation, FColor::Yellow, false, 1.0f, 0, 2.0f);
 	}
+ ProcessPingedEnemy(); 
+	
+}
+
+void UTP_PingComponent::ProcessPingedEnemy()
+{
+	AActor* Spotter = GetOwner();
+	if (!Spotter) { return; }
+	
+	for (AEnemyCharacter* CurrentEnemy : PingedEnemies)
+	{
+		if (CurrentEnemy && !LostEnemies.Contains(CurrentEnemy))
+		{
+			CurrentEnemy->SetSpotted(Spotter, true);
+			// Process the pinged enemy character
+			OnEnemyPinged.Broadcast(CurrentEnemy);
+			// Optionally, you can add more logic here to handle the pinged enemy
+		}
+	} 
+	for (AEnemyCharacter* CurrentEnemy : LostEnemies)
+	{
+		if (CurrentEnemy && !PingedEnemies.Contains(CurrentEnemy))
+		{
+			CurrentEnemy->SetSpotted(Spotter, false);
+			OnEnemyLost.Broadcast(CurrentEnemy);
+			// Optionally, you can add more logic here to handle the lost enemy
+		}
+	}
+	LostEnemies = PingedEnemies; 
 }
 
 

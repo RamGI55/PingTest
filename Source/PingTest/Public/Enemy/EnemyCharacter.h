@@ -16,6 +16,11 @@ public:
 	// Sets default values for this character's properties
 	AEnemyCharacter();
 
+	UFUNCTION()
+	void SetSpotted(const AActor* Spotter, bool bSpotted);
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -31,6 +36,9 @@ protected:
 	void DisableOutline(AEnemyCharacter* LostEnemy); 
 
 private:
+	UPROPERTY (Replicated, BlueprintReadOnly, Category = "Spotting", meta = (AllowPrivateAccess = "true"))
+	bool isSpotted = false;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAnimMontage> AnimMontage;
 

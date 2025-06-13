@@ -5,6 +5,7 @@
 #include "PingTest/Public/Enemy/EnemyCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "PingSystem/TP_PingComponent.h"
 #include "PingTest/PingTestCharacter.h"
 
@@ -14,6 +15,38 @@ AEnemyCharacter::AEnemyCharacter()
 {
 
 	PrimaryActorTick.bCanEverTick = false;
+}
+
+void AEnemyCharacter::SetSpotted(const AActor* Spotter, bool bSpotted)
+{
+	// Team logic, which team the enemy character is on.
+	// For now, we will just use the bool to determine if the enemy is spotted or not. 
+	if (bSpotted)
+	{
+		if (!isSpotted)
+		{
+			isSpotted = true;
+			EnableOutline(); // Enable outline when spotted
+			UE_LOG(LogTemp, Warning, TEXT("Enemy %s spotted by %s"), *GetName(), *Spotter->GetName());
+		}
+	}
+	else 
+	{
+		if (isSpotted)
+		{
+			isSpotted = false;
+			DisableOutline(this); // Disable outline when not spotted
+			UE_LOG(LogTemp, Warning, TEXT("Enemy %s lost sight by %s"), *GetName(), *Spotter->GetName());
+		}
+	}
+}
+
+void AEnemyCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME_CONDITION(AEnemyCharacter, isSpotted, COND_None);
+
 }
 
 // Called when the game starts or when spawned
