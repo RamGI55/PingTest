@@ -86,7 +86,7 @@ void UTP_PingComponent::StopDynamicPing()
 	LostEnemies.Empty();
 	
 }
-
+// Deprecated
 void UTP_PingComponent::UpdateDynamicPing()
 {
 	PingedEnemies.Empty();
@@ -105,7 +105,7 @@ void UTP_PingComponent::UpdateDynamicPing()
 	}
 	ProcessPingedEnemy();
 }
-
+// Deprecated
 bool UTP_PingComponent::GetEnemiesInCrosshair(TArray<AEnemyCharacter*>& OutEnemies) const
 {
 	OutEnemies.Empty();
@@ -138,7 +138,7 @@ bool UTP_PingComponent::GetEnemiesInCrosshair(TArray<AEnemyCharacter*>& OutEnemi
 
 	return OutEnemies.Num() > 0; 
 }
-
+// Deprecated
 bool UTP_PingComponent::isEnemyNearCrosshair(AEnemyCharacter*& OutEnemy, const FVector2D& CrosshairPos,
 	APlayerController* PC) const
 {

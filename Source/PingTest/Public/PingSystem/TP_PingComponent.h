@@ -17,7 +17,7 @@ class APingTestCharacter;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPinged, AEnemyCharacter*, PingedEnemy);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyPingLost, AEnemyCharacter*, LostEnemy);
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PINGTEST_API UTP_PingComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -44,16 +44,16 @@ public:
 	void StopDynamicPing(); 
 
 	UFUNCTION(BlueprintCallable, Category = "Ping")
-	void UpdateDynamicPing();
+	void UpdateDynamicPing(); // Deprecated
 
 	UFUNCTION(BlueprintCallable, Category = "Screen")
-	bool GetEnemiesInCrosshair(TArray<AEnemyCharacter*>& OutEnemies) const;
+	bool GetEnemiesInCrosshair(TArray<AEnemyCharacter*>& OutEnemies) const; // Deprecated
 
 	UFUNCTION(Category = "Ping")
-	bool isEnemyNearCrosshair(AEnemyCharacter*& OutEnemy, const FVector2D& CrosshairPos, APlayerController* PC) const; 
+	bool isEnemyNearCrosshair(AEnemyCharacter*& OutEnemy, const FVector2D& CrosshairPos, APlayerController* PC) const; // Deprecated
 	
 	UFUNCTION(BlueprintCallable, Category = "Ping")
-	void Ping();  // This function will be deprcated in the future, use DyanmicPing instead. 
+	void Ping();   
 
 	//UFUNCTION(Category = "Ping")
 	//bool GetEnemyInCrosshair(AEnemyCharacter*& OutEnemy) const;
