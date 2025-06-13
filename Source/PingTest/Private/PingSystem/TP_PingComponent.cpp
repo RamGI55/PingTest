@@ -56,8 +56,7 @@ void UTP_PingComponent::SetupInputComponent(class UInputComponent* PlayerInputCo
 	{
 		if (PingAction)
 		{
-			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Started, this, &UTP_PingComponent::Ping);
-			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Canceled, this, &UTP_PingComponent::StopDynamicPing); 
+			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Started, this, &UTP_PingComponent::Ping);; 
 			EnhancedInputComponent->BindAction(PingAction, ETriggerEvent::Completed, this, &UTP_PingComponent::StopDynamicPing); 
 			
 		}
@@ -75,7 +74,7 @@ void UTP_PingComponent::StopDynamicPing()
 {
 	if (!GetWorld()) { return; };
 	GetWorld()->GetTimerManager().ClearTimer(PingTimerHandle);
-	for (AEnemyCharacter* Enemy : PingedEnemies)
+	for (AEnemyCharacter* Enemy : LostEnemies)
 	{
 		if (Enemy)
 		{
@@ -177,8 +176,8 @@ void UTP_PingComponent::Ping()
 	if (!GetWorld()) { return; }; 
 	GetWorld()->GetTimerManager().SetTimer(PingTimerHandle,
 		this,
-		&UTP_PingComponent::UpdateDynamicPing,
-		.5f,
+		&UTP_PingComponent::LineTraceForPing,
+		.1f,
 		true,
 		0.1f); 
 }
@@ -222,6 +221,7 @@ void UTP_PingComponent::LineTraceForPing()
 				}
 			}
 		}
+	
 	}
  ProcessPingedEnemy(); 
 	
@@ -251,7 +251,8 @@ void UTP_PingComponent::ProcessPingedEnemy()
 			// Optionally, you can add more logic here to handle the lost enemy
 		}
 	}
-	LostEnemies = PingedEnemies; 
+	LostEnemies = PingedEnemies;
+	PingedEnemies.Empty(); // Clear the pinged enemies after processing 
 }
 
 
